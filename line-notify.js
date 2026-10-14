@@ -2,7 +2,7 @@
    แก้ 2 ค่าข้างล่างเท่านั้น */
 (function () {
   var URL = "https://yajrzamjzsribdgsohgb.supabase.co/functions/v1/line-notify";
-  var KEY = "<ใส่ NOTIFY_KEY>";
+  var KEY = "PMGGLOBAL+1517700122";
   window.PMG_NOTIFY = function (event, r) {
     try {
       var f = r.f || {}, s = r.sec || {}, a = r.appr || {}, form;
