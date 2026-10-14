@@ -1,4 +1,3 @@
-
 (function(){
 'use strict';
 var UNITS=['ชิ้น','กล่อง','ตัวอย่าง','ชุด','ลัง','ถุง','แพ็ค','ถัง','ม้วน','เครื่อง','พาเลท','อื่น ๆ'];
@@ -84,8 +83,6 @@ async function lineLogin(code,nameIn){
     await liffInit();
     if(!window.liff.isLoggedIn()){window.liff.login();return {redirect:true};}
     tok=window.liff.getIDToken();
-    try{var dt=window.liff.getDecodedIDToken();if(dt&&dt.exp&&dt.exp*1000<Date.now()+30000){window.liff.logout();window.liff.login();return {redirect:true};}}catch(e){}
-    if(!tok){window.liff.logout();window.liff.login();return {redirect:true};}
     try{name=(await window.liff.getProfile()).displayName||name;}catch(e){}
   }else{
     if(!code)return {needCode:true};
@@ -95,10 +92,6 @@ async function lineLogin(code,nameIn){
   if(r.error){
     var j=null;try{j=await r.error.context.json();}catch(e){}
     if(j&&j.need_code)return {needCode:true};
-    if(CFG.LIFF_ID&&window.liff&&j&&/expired/i.test(j.error||'')){
-      try{var k='pmg_relogin',t=+sessionStorage.getItem(k)||0;
-        if(Date.now()-t>60000){sessionStorage.setItem(k,String(Date.now()));window.liff.logout();window.liff.login();return {redirect:true};}}catch(e){}
-    }
     return {error:(j&&j.error)||'เข้าสู่ระบบไม่สำเร็จ'};
   }
   var ss=await sb.auth.setSession({access_token:r.data.session.access_token,refresh_token:r.data.session.refresh_token});
@@ -387,7 +380,7 @@ async function submitReq(id,doc,btn){
   if(S.busy)return;S.busy=true;var b=$(btn);if(b)b.disabled=true;
   var r=await sb.from('requests').insert({no:id,type:doc.type,status:'pending',created_by:doc.by.code,by_name:doc.by.name,by_dept:doc.by.dept,f:doc.f});
   if(r.error){toast(dbErr(r.error),true);if(b)b.disabled=false;}
-  else{closeSheet();toast('ส่งขออนุมัติแล้ว');S.tab=S.me.role==='approver'?'approve':'mine';await loadAll();}
+  else{if(window.PMG_NOTIFY)window.PMG_NOTIFY('submitted',doc);closeSheet();toast('ส่งขออนุมัติแล้ว');S.tab=S.me.role==='approver'?'approve':'mine';await loadAll();}
   S.busy=false;
 }
 /* ---------- detail ---------- */
@@ -450,7 +443,7 @@ async function approve(id,res){
   var r=await sb.from('requests').update({status:res==='ok'?'approved':'rejected',appr:{result:res,by:S.me.code,name:S.me.name,at:new Date().toISOString(),note:note}}).eq('no',id).select('no');
   if(r.error)toast(dbErr(r.error),true);
   else if(!r.data||!r.data.length)toast('ไม่มีสิทธิ์หรือรายการนี้ถูกดำเนินการแล้ว',true);
-  else{toast(res==='ok'?'อนุมัติแล้ว':'บันทึกการไม่อนุมัติแล้ว');closeSheet();loadAll();}
+  else{if(window.PMG_NOTIFY){var q0=S.reqs.find(function(x){return x.no===id;});if(q0)window.PMG_NOTIFY(res==='ok'?'approved':'rejected',Object.assign({},q0,{appr:{name:S.me.name}}));}toast(res==='ok'?'อนุมัติแล้ว':'บันทึกการไม่อนุมัติแล้ว');closeSheet();loadAll();}
   S.busy=false;
 }
 async function saveCar(id){
@@ -468,6 +461,7 @@ async function saveCar(id){
     var r=await sb.from('requests').update({sec:sec,status:done?'completed':'out'}).eq('no',id).select('no');
     if(r.error)throw r.error;
     if(!r.data||!r.data.length)throw {message:'ไม่มีสิทธิ์ทำรายการนี้'};
+    if(window.PMG_NOTIFY){var q1=S.reqs.find(function(x){return x.no===id;});if(q1)window.PMG_NOTIFY(done?'done':'out',Object.assign({},q1,{sec:sec}));}
     toast(done?'บันทึกเสร็จสิ้น':'บันทึกขาออกแล้ว');closeSheet();loadAll();
   }catch(e){toast(dbErr(e),true);b.disabled=false;}
   S.busy=false;
@@ -481,7 +475,7 @@ async function saveGoods(id){
   var r=await sb.from('requests').update({sec:sec,status:'completed'}).eq('no',id).select('no');
   if(r.error){toast(dbErr(r.error),true);b.disabled=false;}
   else if(!r.data||!r.data.length){toast('ไม่มีสิทธิ์ทำรายการนี้',true);b.disabled=false;}
-  else{toast('บันทึกผลการตรวจแล้ว');closeSheet();loadAll();}
+  else{if(window.PMG_NOTIFY){var q2=S.reqs.find(function(x){return x.no===id;});if(q2)window.PMG_NOTIFY('done',Object.assign({},q2,{sec:sec}));}toast('บันทึกผลการตรวจแล้ว');closeSheet();loadAll();}
   S.busy=false;
 }
 /* ---------- monthly summary ---------- */
