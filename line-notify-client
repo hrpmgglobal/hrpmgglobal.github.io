@@ -1,7 +1,7 @@
 // ไฟล์แยก: เรียกใช้หลังบันทึกข้อมูลสำเร็จ  เช่น await notifyLine('submitted', formData)
 // event: submitted | approved | rejected | done
 const LINE_NOTIFY_URL = "https://yajrzamjzsribdgsohgb.supabase.co/functions/v1/line-webhook";
-const LINE_NOTIFY_KEY = "zxcvbnm,./asdfghjkl;'qwertyuiop[]";
+const LINE_NOTIFY_KEY = "PMGGLOBAL+1517700122";
 async function notifyLine(event, form) {
   try {
     await fetch(LINE_NOTIFY_URL, {
