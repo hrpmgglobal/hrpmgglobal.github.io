@@ -1,0 +1,16 @@
+// ไฟล์แยก: เรียกใช้หลังบันทึกข้อมูลสำเร็จ  เช่น await notifyLine('submitted', formData)
+// event: submitted | approved | rejected | done
+const LINE_NOTIFY_URL = "https://yajrzamjzsribdgsohgb.supabase.co/functions/v1/line-webhook";
+const LINE_NOTIFY_KEY = "zxcvbnm,./asdfghjkl;'qwertyuiop[]";
+async function notifyLine(event, form) {
+  try {
+    await fetch(LINE_NOTIFY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-notify-key": LINE_NOTIFY_KEY },
+      body: JSON.stringify({ event, form }),
+    });
+  } catch (e) { console.warn("LINE notify failed", e); } // แจ้งเตือนล้มเหลวต้องไม่ทำให้การบันทึกล้ม
+}
+// จุดที่ต้องเรียก: หลัง sendCar()/sendGoods() -> 'submitted'
+//   หลัง decide() -> 'approved' หรือ 'rejected'
+//   หลัง doneCar()/doneGoods() -> 'done'
