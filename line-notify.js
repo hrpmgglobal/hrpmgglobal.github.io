@@ -2,8 +2,9 @@
    แก้ 2 ค่าข้างล่างเท่านั้น */
 (function () {
   var URL = "https://yajrzamjzsribdgsohgb.supabase.co/functions/v1/line-notify";
-  var KEY = "PMGGLOBAL+1517700122";
+  var KEY = "<ใส่ NOTIFY_KEY>";
   window.PMG_NOTIFY = function (event, r) {
+    if (event === "out") return; // ไม่แจ้งตอนรถออก (ประหยัดโควตา LINE)
     try {
       var f = r.f || {}, s = r.sec || {}, a = r.appr || {}, form;
       if (r.type === "car") {
