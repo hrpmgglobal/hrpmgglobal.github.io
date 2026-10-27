@@ -6,7 +6,7 @@
 const LINE_CFG = {
   LIFF_ID: "2011958477-jLInZ64b",
   NOTIFY_URL: "https://yajrzamjzsribdgsohgb.supabase.co/functions/v1/line-notify",
-  NOTIFY_KEY: "PMGGLOBAL+1517700122",
+  NOTIFY_KEY: "pmgglobal+123456789zxcvbnm,./asdfghjkl;'qwertyuiop[]",
 };
 
 // 1) ล็อกอินด้วย LINE: หลังเสร็จ จะได้ window.LINE_USER = {userId, displayName}
