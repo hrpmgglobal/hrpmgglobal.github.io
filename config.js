@@ -24,12 +24,12 @@ window.PMG_NOTIFY = function (event, doc) {
       ? { tOut: s.outT, mOut: s.outKm, tIn: s.inT || '-', mIn: s.inKm || '-' }
       : { ok: s.ok === 'yes' ? 'ถูกต้อง' : 'ไม่ถูกต้อง', why: s.reason }
   };
-  fetch(C.SUPABASE_URL + '/functions/v1/line-notify', {
+  fetch(C.SUPABASE_URL + 'https://yajrzamjzsribdgsohgb.supabase.co', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-notify-key': C.NOTIFY_KEY,
-      'Authorization': 'Bearer ' + C.SUPABASE_ANON_KEY
+      'x-notify-key': C.pmgglobal+123456789zxcvbnm,./asdfghjkl;'qwertyuiop[],
+      'Authorization': 'Bearer ' + C.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhanJ6YW1qenNyaWJkZ3NvaGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2MTE1ODYsImV4cCI6MjEwNzE4NzU4Nn0.LzgVXaCbCHb935TyM1lj9V8viryXwAteuOebi2q9ku4
     },
     body: JSON.stringify({ event: event, form: form })
   }).catch(function () {});
